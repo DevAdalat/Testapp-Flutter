@@ -33,7 +33,7 @@ jobs:
         - name: Build apk
           run: flutter build apk --split-per-abi
         - name: Send file to telegram
-          run: curl -v -F "chat_id=${{ secret.CHAT_ID }}" -F document=build/app/outputs/flutter-apk/* https://api.telegram.org/bot${{ secret.BOT_TOKEN }}/sendDocument
+          run: curl -v -F "chat_id=${{ secrets.CHAT_ID }}" -F document=build/app/outputs/flutter-apk/* https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendDocument
 
 
       
