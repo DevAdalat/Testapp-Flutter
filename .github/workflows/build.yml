@@ -1,0 +1,39 @@
+name: Flutter CD Release
+
+on: [push]
+jobs:
+  build:
+    name: Build release apk
+    runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v1
+        - name: Setup Java
+          uses: actions/setup-java@v3
+          with:
+            distribution: 'adopt'
+            java-version: '16'
+        - name: Setup Flutter
+          uses: subosito/flutter-action@v2
+          with:
+            channel: stable
+        - name: Flutter version
+          run: flutter --version
+
+        - name: Cache pub dependencies
+          uses: actions/cache@v2
+          with:
+            path: ${{ env.FLUTTER_HOME }}/.pub-cache
+            key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+            restore-keys: ${{ runner.os }}-pub-
+        - name: Download pub dependencies
+          run: flutter pub get
+        - name: Run analyzer
+          run: flutter analyze
+        - name: Build apk
+          run: flutter build apk --split-per-abi
+        - name: Send file to telegram
+          run: curl -v -F "chat_id=${{ secret.CHAT_ID }}" -F document=build/app/outputs/flutter-apk/* https://api.telegram.org/bot${{ secret.BOT_TOKEN }}/sendDocument
+
+
+      
