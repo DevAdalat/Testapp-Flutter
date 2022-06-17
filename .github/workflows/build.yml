@@ -5,7 +5,7 @@ jobs:
   build:
     name: Build release apk
     runs-on: ubuntu-latest
-      steps:
+    steps:
         - name: Checkout
           uses: actions/checkout@v1
         - name: Setup Java
